@@ -10,11 +10,10 @@
 # The default configuration for the LEDs is Common Anode which works for most RGB LEDs
 
 # LED modes
-# green blinking    - USB cable attached, charging battery
-# green constant    - on battery, >= 0.5 fraction of battery life
+# orange constant    - USB cable attached, charging battery
+# blue constant    - on battery, >= 0.5 fraction of battery life
 # red constant      - on battery, < 0.20 fraction of battery life
 # red blinking      - on battery, < 0.15 fraction of battery life
-# red blinking fast - on battery, < 0.10 fraction of battery life
 
 # .pi_power file format:
 # one line - <battery fraction 0.0-1.0>,<power source - usb or battery>
@@ -24,10 +23,10 @@
 
 
 # Define each LED mode - set the on/off times here (in seconds) - 0 means always on
-def green_constant():
+def blue_constant():
     blink_time_on  = 0
     blink_time_off = 0
-    leds = ['green']
+    leds = ['blue']
     update_leds(leds, blink_time_on, blink_time_off)
 
 def red_constant():
@@ -36,27 +35,15 @@ def red_constant():
     leds = ['red']
     update_leds(leds, blink_time_on, blink_time_off)
 
-def yellow_constant():
-    blink_time_on  = 0
-    blink_time_off = 0
-    leds = ['red', 'green']
-    update_leds(leds, blink_time_on, blink_time_off)
-
-def green_blink():
+def orange_constant():
     blink_time_on  = 2.0
     blink_time_off = 0.5
-    leds = ['green']
+    leds = ['orange']
     update_leds(leds, blink_time_on, blink_time_off)
 
 def red_blink():
     blink_time_on  = 1.0
     blink_time_off = 1.0
-    leds = ['red']
-    update_leds(leds, blink_time_on, blink_time_off)
-
-def red_blink_fast():
-    blink_time_on  = 0.5
-    blink_time_off = 0.5
     leds = ['red']
     update_leds(leds, blink_time_on, blink_time_off)
 
@@ -102,7 +89,7 @@ led_states = {'off': GPIO.HIGH, 'on': GPIO.LOW}
 
 
 # Specify the RasPi GPIO pins to use - modufy these to suit your configuration
-led_pin = {'red': 21, 'green': 20}
+led_pin = {'red': 21, 'blue': 20, 'orange':???}
 
 
 # check the pi_power file every poll_interval seconds
@@ -117,7 +104,8 @@ power_source = 'unknown'
 power_fraction = 1.0
 
 GPIO.setup(led_pin['red'],   GPIO.OUT)
-GPIO.setup(led_pin['green'], GPIO.OUT)
+GPIO.setup(led_pin['blue'], GPIO.OUT)
+GPIO.setup(led_pin['orange'], GPIO.OUT)
 
 
 # Read the .pi_power file at intervals and light the correct LED
@@ -136,28 +124,24 @@ while True:
         dummy = 1
 
     GPIO.output(led_pin['red'],   led_states['off'])
-    GPIO.output(led_pin['green'], led_states['off'])
+    GPIO.output(led_pin['blue'], led_states['off'])
+    GPIO.output(led_pin['orange'], led_states['off'])
 
     if power_source == 'usb':
-        green_blink()
+        orange_constant()
 
     elif power_source == 'battery':
 
         # Modify the colors and cutoff levels to suit your needs
 
         if power_fraction >= 0.25:
-            green_constant()
-            # if you have an RGB LED try this instead
-            # yellow_constant()
-
-        elif power_fraction >= 0.15:
-            red_constant()
+            blue_constant()
 
         elif power_fraction >= 0.10:
-            red_blink()
+            red_constant()
 
         else:
-            red_blink_fast()
+            red_blink()
     else:
         # Leave LEDs off - just sleep
         time.sleep(poll_interval)
