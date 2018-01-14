@@ -89,7 +89,7 @@ led_states = {'off': GPIO.HIGH, 'on': GPIO.LOW}
 
 
 # Specify the RasPi GPIO pins to use - modufy these to suit your configuration
-led_pin = {'red': 21, 'blue': 20, 'orange':???}
+led_pin = {'red': 21, 'blue': 20, 'orange':16}
 
 
 # check the pi_power file every poll_interval seconds
