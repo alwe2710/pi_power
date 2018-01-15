@@ -36,8 +36,8 @@ def red_constant():
     update_leds(leds, blink_time_on, blink_time_off)
 
 def orange_constant():
-    blink_time_on  = 2.0
-    blink_time_off = 0.5
+    blink_time_on  = 0
+    blink_time_off = 0
     leds = ['orange']
     update_leds(leds, blink_time_on, blink_time_off)
 
